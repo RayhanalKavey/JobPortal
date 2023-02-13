@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import useTitle from "../../../hooks/useTitle/useTitle";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../../../features/auth/authSlice";
 
 const Login = () => {
   useTitle("Login");
@@ -12,8 +14,7 @@ const Login = () => {
     handleSubmit,
   } = useForm();
   const [loginError, setLoginError] = useState("");
-
-  /// Auth Context
+  const dispatch = useDispatch();
 
   /// redirect user
   // const navigate = useNavigate();
@@ -25,6 +26,7 @@ const Login = () => {
 
   const handleLogin = (data) => {
     const { email, password } = data;
+    dispatch(loginUser({ email, password }));
     // initially set login error to empty
     // setLoginError("");
 

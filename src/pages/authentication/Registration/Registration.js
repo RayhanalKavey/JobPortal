@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { createUser } from "../../../features/auth/authSlice";
 import useTitle from "../../../hooks/useTitle/useTitle";
 
 const Registration = () => {
@@ -17,8 +19,8 @@ const Registration = () => {
   const confirmPassword = useWatch({ control, name: "confirmPassword" });
   const [signUpError, setSignUpError] = useState("");
   const [disabled, setDisabled] = useState(true);
-  console.log(password);
-  console.log(confirmPassword);
+  const dispatch = useDispatch();
+
   useEffect(() => {
     if (
       password !== undefined &&
@@ -39,8 +41,9 @@ const Registration = () => {
 
   // Handle Sign Up
   const handleSignUp = (data) => {
-    const { name, email, password } = data;
+    const { email, password } = data;
     console.log(data);
+    dispatch(createUser({ email, password }));
     reset();
     setSignUpError("");
   };
@@ -55,7 +58,7 @@ const Registration = () => {
         <form onSubmit={handleSubmit(handleSignUp)}>
           <div className="form-control w-full max-w-xs">
             {/*---------- name ----------*/}
-            <label className="label">
+            {/* <label className="label">
               <span className="label-text">Name</span>
             </label>
             <input
@@ -63,7 +66,7 @@ const Registration = () => {
               {...register("name", { required: "Name is required !" })}
               className="input input-bordered w-full max-w-xs"
               placeholder="Your name"
-            />
+            /> */}
             {/* erroR message */}
             {errors.name && (
               <p className="text-error mt-1"> {errors.name?.message}</p>
