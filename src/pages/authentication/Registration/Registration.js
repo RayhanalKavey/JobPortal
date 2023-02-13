@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import React, { useEffect, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useTitle from "../../../hooks/useTitle/useTitle";
 
@@ -10,17 +10,32 @@ const Registration = () => {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm();
+  const password = useWatch({ control, name: "password" });
+  const confirmPassword = useWatch({ control, name: "confirmPassword" });
   const [signUpError, setSignUpError] = useState("");
-
-  // Redirect user where they want to go
+  const [disabled, setDisabled] = useState(true);
+  console.log(password);
+  console.log(confirmPassword);
+  useEffect(() => {
+    if (
+      password !== undefined &&
+      password !== "" &&
+      confirmPassword !== undefined &&
+      confirmPassword !== "" &&
+      password === confirmPassword
+    ) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [password, confirmPassword]);
+  // Redirect user
   // const navigate = useNavigate();
   // const location = useLocation();
   // const from = location.state?.from?.pathname || "/";
-
-  //image bb image hosting key
-  // const imageHostKey = process.env.REACT_APP_imagebb_key;
 
   // Handle Sign Up
   const handleSignUp = (data) => {
@@ -28,24 +43,6 @@ const Registration = () => {
     console.log(data);
     reset();
     setSignUpError("");
-    // const image = photoURL[0];
-    // const formData = new FormData();
-    // formData.append("image", image);
-
-    // /// send image to the dedicated image hosting server imgbb
-    // const url = `https://api.imgbb.com/1/upload?key=${imageHostKey}`;
-    // fetch(url, {
-    //   method: "POST",
-    //   body: formData,
-    // })
-    //   .then((res) => res.json())
-    //   .then((imgData) => {
-    //     if (imgData.success) {
-    //       const photoURL = imgData.data.url;
-    //       //Create user here after getting the image or if we want to create without image create outside of the blog
-    //       // //Create user with email and password enD
-    //     }
-    //   });
   };
 
   // ----------------------------///--------------------------------//
@@ -70,20 +67,6 @@ const Registration = () => {
             {/* erroR message */}
             {errors.name && (
               <p className="text-error mt-1"> {errors.name?.message}</p>
-            )}
-            {/* -------photoUrl----------- */}
-            {/* <label className="label">
-              <span className="label-text">Photo URL</span>
-            </label>
-            <input
-              type="file"
-              {...register("photoURL", { required: "Image is required !" })}
-              className="file-input text-primary  file-input-primary w-full max-w-xs"
-              placeholder="Your Photo"
-              accept="image/*"
-            /> */}
-            {errors.photoURL && (
-              <p className="text-error mt-1"> {errors.photoURL?.message}</p>
             )}
             {/*-------------email------------- */}
             <label className="label">
@@ -146,7 +129,8 @@ const Registration = () => {
                 required: "Password is required !",
                 minLength: {
                   value: 6,
-                  message: "Password must be 6 character or longer.",
+                  message:
+                    "Password must be 6 character, two uppercase and one special case letter.",
                 },
                 pattern: {
                   value: /(?=.*[A-Z].*[A-Z])(?=.*[!#@$%&? "])/,
@@ -163,12 +147,32 @@ const Registration = () => {
                 {errors.password?.message}
               </p>
             )}{" "}
+            {/*----Confirm Password----- */}
+            <label className="label">
+              <span className="label-text">Confirm Password</span>
+            </label>
+            <input
+              type="password"
+              {...register("confirmPassword", {
+                required: "Password confirmation is required !",
+              })}
+              className="input input-bordered w-full max-w-xs"
+              placeholder="*********"
+            />
+            {/* Show password erroRs */}
+            {errors.confirmPassword && (
+              <p className="text-error mt-1" role="alert">
+                {errors.confirmPassword?.message}
+              </p>
+            )}{" "}
+            {/*----Confirm Password end----- */}
           </div>
 
           <input
             className="btn btn-primary w-full mt-5 mb-1"
             type="submit"
             value="Sign Up"
+            disabled={disabled}
           />
           {signUpError && (
             <label className="label">
