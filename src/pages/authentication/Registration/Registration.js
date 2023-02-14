@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { createUser } from "../../../features/auth/authSlice";
+import {
+  createUser,
+  loginUserWithGoogle,
+} from "../../../features/auth/authSlice";
 import useTitle from "../../../hooks/useTitle/useTitle";
 
 const Registration = () => {
   useTitle("Registration");
+  const { isLoading, email, isError, error } = useSelector(
+    (state) => state?.auth
+  );
   // React hook form user form and error
   const {
     register,
@@ -17,7 +23,6 @@ const Registration = () => {
   } = useForm();
   const password = useWatch({ control, name: "password" });
   const confirmPassword = useWatch({ control, name: "confirmPassword" });
-  const [signUpError, setSignUpError] = useState("");
   const [disabled, setDisabled] = useState(true);
   const dispatch = useDispatch();
 
@@ -35,18 +40,26 @@ const Registration = () => {
     }
   }, [password, confirmPassword]);
   // Redirect user
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   // const location = useLocation();
   // const from = location.state?.from?.pathname || "/";
 
   // Handle Sign Up
   const handleSignUp = (data) => {
     const { email, password } = data;
-    console.log(data);
     dispatch(createUser({ email, password }));
     reset();
-    setSignUpError("");
   };
+
+  // Google login
+  const handleGoogleLogin = () => {
+    dispatch(loginUserWithGoogle());
+  };
+  useEffect(() => {
+    if (!isLoading && email) {
+      navigate("/");
+    }
+  }, [isLoading, email, navigate]);
 
   // ----------------------------///--------------------------------//
   return (
@@ -57,20 +70,6 @@ const Registration = () => {
         {/* handleSubmit with react hook form */}
         <form onSubmit={handleSubmit(handleSignUp)}>
           <div className="form-control w-full max-w-xs">
-            {/*---------- name ----------*/}
-            {/* <label className="label">
-              <span className="label-text">Name</span>
-            </label>
-            <input
-              type="text"
-              {...register("name", { required: "Name is required !" })}
-              className="input input-bordered w-full max-w-xs"
-              placeholder="Your name"
-            /> */}
-            {/* erroR message */}
-            {errors.name && (
-              <p className="text-error mt-1"> {errors.name?.message}</p>
-            )}
             {/*-------------email------------- */}
             <label className="label">
               <span className="label-text">Email</span>
@@ -177,9 +176,9 @@ const Registration = () => {
             value="Sign Up"
             disabled={disabled}
           />
-          {signUpError && (
+          {isError && (
             <label className="label">
-              <span className="label-text-alt text-error">{signUpError}</span>
+              <span className="label-text-alt text-error">{error}</span>
             </label>
           )}
         </form>
@@ -190,7 +189,11 @@ const Registration = () => {
           </Link>{" "}
         </p>
         <div className="divider ">or</div>
-        <button className="btn btn-primary w-full btn-outline" type="submit">
+        <button
+          onClick={handleGoogleLogin}
+          className="btn btn-primary w-full btn-outline"
+          type="submit"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 32 32"

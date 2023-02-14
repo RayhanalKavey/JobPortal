@@ -1,19 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import useTitle from "../../../hooks/useTitle/useTitle";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../../../features/auth/authSlice";
+import {
+  loginUser,
+  loginUserWithGoogle,
+} from "../../../features/auth/authSlice";
 
 const Login = () => {
   useTitle("Login");
-  const { isLoading, email } = useSelector((state) => state?.auth);
+  const { isLoading, email, isError, error } = useSelector(
+    (state) => state?.auth
+  );
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm();
-  const [loginError, setLoginError] = useState("");
+
   const dispatch = useDispatch();
 
   /// redirect user
@@ -27,10 +32,11 @@ const Login = () => {
   const handleLogin = (data) => {
     const { email, password } = data;
     dispatch(loginUser({ email, password }));
-    // initially set login error to empty
-    setLoginError("");
   };
-
+  // Log in with google
+  const handleGoogleLogin = () => {
+    dispatch(loginUserWithGoogle());
+  };
   useEffect(() => {
     if (!isLoading && email) {
       navigate("/");
@@ -89,9 +95,9 @@ const Login = () => {
             type="submit"
             value="Login"
           />
-          {loginError && (
+          {isError && (
             <label className="label">
-              <span className="label-text-alt text-error">{loginError}</span>
+              <span className="label-text-alt text-error">{error}</span>
             </label>
           )}
         </form>
@@ -102,7 +108,11 @@ const Login = () => {
           </Link>{" "}
         </p>
         <div className="divider">or</div>
-        <button className="btn btn-primary w-full btn-outline" type="submit">
+        <button
+          onClick={handleGoogleLogin}
+          className="btn btn-primary w-full btn-outline"
+          type="submit"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 32 32"
