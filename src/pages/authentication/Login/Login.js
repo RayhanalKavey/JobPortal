@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import useTitle from "../../../hooks/useTitle/useTitle";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../../features/auth/authSlice";
 
 const Login = () => {
   useTitle("Login");
-
+  const { isLoading, email } = useSelector((state) => state?.auth);
   const {
     register,
     formState: { errors },
@@ -17,7 +17,7 @@ const Login = () => {
   const dispatch = useDispatch();
 
   /// redirect user
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   //user location where they want to go
   // const location = useLocation();
   // const from = location.state?.from?.pathname || "/";
@@ -28,10 +28,14 @@ const Login = () => {
     const { email, password } = data;
     dispatch(loginUser({ email, password }));
     // initially set login error to empty
-    // setLoginError("");
-
-    console.log(data);
+    setLoginError("");
   };
+
+  useEffect(() => {
+    if (!isLoading && email) {
+      navigate("/");
+    }
+  }, [isLoading, email, navigate]);
 
   //-----------------------///---------------------------//
   return (

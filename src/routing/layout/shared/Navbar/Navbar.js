@@ -1,8 +1,21 @@
 import { Link } from "react-router-dom";
 import { FaUser, FaGripHorizontal } from "react-icons/fa";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { signOut } from "firebase/auth";
+import { logout } from "../../../../features/auth/authSlice";
+import auth from "../../../../firebase/firebase.config";
 
 const Navbar = () => {
+  const { email } = useSelector((state) => state?.auth);
+  const dispatch = useDispatch();
+
+  const handleSignOut = () => {
+    signOut(auth).then(() => {
+      dispatch(logout());
+    });
+  };
+
   const navItems = (
     <React.Fragment>
       <li>
@@ -13,7 +26,18 @@ const Navbar = () => {
       </li>
     </React.Fragment>
   );
-  const logInOut = (
+  const logInOut = email ? (
+    <>
+      <li title="User Image">
+        <button
+          onClick={handleSignOut}
+          className="hover:text-secondary transition-all"
+        >
+          Log Out
+        </button>
+      </li>
+    </>
+  ) : (
     <>
       <li>
         <Link to={"/login"}>Login</Link>
@@ -21,9 +45,9 @@ const Navbar = () => {
       <li>
         <Link to={"/registration"}>Registration</Link>
       </li>
-      <li title="User Image">
+      {/* <li title="User Image">
         <FaUser></FaUser>
-      </li>
+      </li> */}
     </>
   );
 

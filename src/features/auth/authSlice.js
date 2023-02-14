@@ -17,7 +17,7 @@ export const createUser = createAsyncThunk(
   "auth/createUser",
   async ({ email, password }) => {
     const data = await createUserWithEmailAndPassword(auth, email, password);
-    return data?.user;
+    return data?.user?.email;
   }
 );
 // login thunk
@@ -25,13 +25,18 @@ export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async ({ email, password }) => {
     const data = await signInWithEmailAndPassword(auth, email, password);
-    return data?.user;
+    return data?.user?.email;
   }
 );
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
+  reducers: {
+    logout: (state) => {
+      state.email = "";
+    },
+  },
   extraReducers: (builder) => {
     builder
       ?.addCase(createUser.pending, (state) => {
@@ -41,7 +46,7 @@ const authSlice = createSlice({
       })
       .addCase(createUser.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.email = payload?.email;
+        state.email = payload;
         state.isError = false;
         state.error = "";
       })
@@ -58,7 +63,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.email = payload?.email;
+        state.email = payload;
         state.isError = false;
         state.error = "";
       })
@@ -70,4 +75,6 @@ const authSlice = createSlice({
       });
   },
 });
+
+export const { logout } = authSlice.actions;
 export default authSlice.reducer;
