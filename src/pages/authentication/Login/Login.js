@@ -46,9 +46,9 @@ const Login = () => {
   //-----------------------///---------------------------//
   return (
     <div className="flex items-center justify-center h-[800px] mx-5">
-      <div className="w-96 p-7 shadow-2xl rounded">
+      <div className="w-96 bg-gray-300 p-16  shadow-xl rounded-tr-[100px] rounded-bl-[100px]">
         {" "}
-        <h1 className="text-3xl my-5 text-center">Login</h1>
+        <h1 className="text-3xl my-5 text-center ">Login</h1>
         {/* From react hook form */}
         <form onSubmit={handleSubmit(handleLogin)}>
           {/* daisy ui */}
@@ -91,7 +91,7 @@ const Login = () => {
           </div>
 
           <input
-            className="btn btn-primary w-full mt-5 mb-1"
+            className="btn btn-md w-full mt-5 mb-1"
             type="submit"
             value="Login"
           />
@@ -102,7 +102,7 @@ const Login = () => {
           )}
         </form>
         <p className="text-center mt-2">
-          New to <span className="font-semibold">Project Name</span>?{" "}
+          New to <span className="font-semibold">Job Portal</span>?{" "}
           <Link className="text-primary" to={"/registration"}>
             Create new Account
           </Link>{" "}

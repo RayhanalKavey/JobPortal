@@ -3,7 +3,7 @@ import Spinner from "../../../components/Spinner/Spinner";
 
 const Home = () => {
   return (
-    <div>
+    <div className="min-h-screen">
       <h1>home</h1>
     </div>
   );

@@ -64,7 +64,7 @@ const Registration = () => {
   // ----------------------------///--------------------------------//
   return (
     <div className="flex items-center justify-center h-[800px] mx-5 my-12">
-      <div className="w-96 p-7 shadow-2xl rounded">
+      <div className="w-96 bg-gray-300 p-16  shadow-xl rounded-tr-[100px] rounded-bl-[100px]">
         {" "}
         <h1 className="text-3xl my-5 text-center">Sign Up</h1>
         {/* handleSubmit with react hook form */}
@@ -191,7 +191,7 @@ const Registration = () => {
         <div className="divider ">or</div>
         <button
           onClick={handleGoogleLogin}
-          className="btn btn-primary w-full btn-outline"
+          className="btn btn-md w-full btn-outline"
           type="submit"
         >
           <svg

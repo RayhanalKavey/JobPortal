@@ -7,7 +7,7 @@ import { logout } from "../../../../features/auth/authSlice";
 import auth from "../../../../firebase/firebase.config";
 
 const Navbar = () => {
-  const { email } = useSelector((state) => state?.auth);
+  const { email, role } = useSelector((state) => state?.auth);
   const dispatch = useDispatch();
 
   const handleSignOut = () => {
@@ -21,11 +21,18 @@ const Navbar = () => {
       <li>
         <Link to={"/"}>Home</Link>
       </li>
-      {email && (
+      {/* Is there is no role the show the role  */}
+      {email && !role && (
+        <li>
+          <Link to={"/role"}>Get stated with Role</Link>
+        </li>
+      )}
+      {/* If there is role of a user present then show the dashboard */}
+      {email && role && (
         <>
           {" "}
           <li>
-            <Link to={"/role"}>Dashboard</Link>
+            <Link to={"/dashboard"}>Dashboard</Link>
           </li>
         </>
       )}
@@ -57,7 +64,7 @@ const Navbar = () => {
   );
 
   return (
-    <div className="navbar bg-primary text-white py-3 px-2 sm:px-8">
+    <div className="navbar bg-gray-700 text-white py-3 px-2 sm:px-8">
       <div className="navbar-start">
         <div className="dropdown">
           <label tabIndex={0} className="btn btn-ghost lg:hidden">
@@ -84,7 +91,7 @@ const Navbar = () => {
           </ul>
         </div>
         <Link to={"/"} className=" normal-case font-semibold text-2xl">
-          Project Name
+          Job Portal
         </Link>
       </div>
       <div className="navbar-center hidden lg:flex">
