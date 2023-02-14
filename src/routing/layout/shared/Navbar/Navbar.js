@@ -21,9 +21,14 @@ const Navbar = () => {
       <li>
         <Link to={"/"}>Home</Link>
       </li>
-      <li>
-        <Link to={"/dashboard"}>Dashboard</Link>
-      </li>
+      {email && (
+        <>
+          {" "}
+          <li>
+            <Link to={"/role"}>Dashboard</Link>
+          </li>
+        </>
+      )}
     </React.Fragment>
   );
   const logInOut = email ? (
